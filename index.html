@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>PHC AFRICA GAME</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<style>
+body{
+background:#000;
+color:white;
+text-align:center;
+font-family:Arial;
+}
+button{
+padding:15px;
+margin:10px;
+font-size:20px;
+background:green;
+color:white;
+border:none;
+}
+</style>
+</head>
+
+<body>
+
+<h1>POINT HUNTER AFRICA</h1>
+
+<h2>Solde : <span id="money">0</span> FCFA</h2>
+
+<button onclick="shoot()">TIRER</button>
+
+<script>
+
+let argent = 0;
+
+function shoot(){
+let gain = 10;
+argent += gain;
+document.getElementById("money").innerText = argent;
+}
+
+</script>
+
+</body>
+</html>
