@@ -1,45 +1,76 @@
 <!DOCTYPE html>
 <html>
 <head>
-<title>PHC AFRICA GAME</title>
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<style>
-body{
-background:#000;
-color:white;
-text-align:center;
-font-family:Arial;
+<title>PHC - POINT HUNTER AFRICA</title>
+<script type="module">
+
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+import { getDatabase, ref, set, get, update } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js";
+
+const firebaseConfig = {
+  apiKey: "AIzaSyC-JHjFktspx79KAugwKQbzEULVTTYNM5c",
+  authDomain: "phc-africa.firebaseapp.com",
+  databaseURL: "https://phc-africa-default-rtdb.firebaseio.com",
+  projectId: "phc-africa",
+  storageBucket: "phc-africa.appspot.com",
+  messagingSenderId: "454652803461",
+  appId: "1:454652803461:web:da2379fc5da32045442cec"
+};
+
+const app = initializeApp(firebaseConfig);
+const db = getDatabase(app);
+
+let player = localStorage.getItem("phc-player");
+
+if(!player){
+player = "player-" + Math.floor(Math.random()*1000000);
+localStorage.setItem("phc-player", player);
 }
-button{
-padding:15px;
-margin:10px;
-font-size:20px;
-background:green;
-color:white;
-border:none;
+
+async function loadMoney(){
+const snapshot = await get(ref(db,"players/"+player));
+if(snapshot.exists()){
+document.getElementById("money").innerHTML = snapshot.val().money + " FCFA";
+}else{
+set(ref(db,"players/"+player),{
+money:1000,
+points:100
+});
+document.getElementById("money").innerHTML="1000 FCFA";
 }
-</style>
-</head>
-
-<body>
-
-<h1>POINT HUNTER AFRICA</h1>
-
-<h2>Solde : <span id="money">0</span> FCFA</h2>
-
-<button onclick="shoot()">TIRER</button>
-
-<script>
-
-let argent = 0;
-
-function shoot(){
-let gain = 10;
-argent += gain;
-document.getElementById("money").innerText = argent;
 }
+
+window.shoot = async function(){
+const snapshot = await get(ref(db,"players/"+player));
+let data = snapshot.val();
+let win = Math.random();
+
+if(win>0.5){
+data.money+=10;
+data.points+=1;
+alert("TIR RÉUSSI +10 FCFA");
+}else{
+data.money-=5;
+alert("TIR RATÉ -5 FCFA");
+}
+
+update(ref(db,"players/"+player),{
+money:data.money,
+points:data.points
+});
+
+loadMoney();
+}
+
+loadMoney();
 
 </script>
+</head>
 
+<body style="background:black;color:white;text-align:center">
+<h1>POINT HUNTER AFRICA</h1>
+<h2 id="money">Chargement...</h2>
+<button onclick="shoot()" style="padding:20px;background:green;color:white">TIRER</button>
 </body>
+
 </html>
